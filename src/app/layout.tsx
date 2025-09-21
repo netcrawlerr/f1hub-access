@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   title: "F1 Hub – Your Ultimate Formula 1 Companion",
   description:
     "Stay updated with the latest Formula 1 races, schedules, standings, and news. F1 Hub delivers everything a true F1 fan needs in one place.",
+  icons: {
+    icon: [{ url: "/logo.png", sizes: "32x32", type: "image/png" }],
+  },
   keywords: [
     "Formula 1",
     "F1",

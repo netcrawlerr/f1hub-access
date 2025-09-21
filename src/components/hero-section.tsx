@@ -9,6 +9,16 @@ import { FaGithub, FaTelegram } from "react-icons/fa";
 export default function HeroSection() {
   const [menuState, setMenuState] = useState(false);
 
+  type GitHubAsset = {
+    name: string;
+    browser_download_url: string;
+  };
+
+  type GitHubRelease = {
+    assets: GitHubAsset[];
+    tag_name: string;
+  };
+
   const downloadApk = async () => {
     try {
       const res = await fetch(
@@ -16,18 +26,26 @@ export default function HeroSection() {
       );
       if (!res.ok) throw new Error("Failed to fetch latest release");
 
-      const release = await res.json();
+      const release: GitHubRelease = await res.json();
 
-      const apkAsset = release.assets.find((a: any) => a.name.startsWith("F1"));
+      console.log("Latest release:", release);
+
+      const apkAsset = release.assets.find((a) => a.name.startsWith("F1"));
+
       if (!apkAsset) {
         alert("APK not found in latest release");
         return;
       }
 
-      window.open(apkAsset.browser_download_url, "_blank");
+      const link = document.createElement("a");
+      link.href = apkAsset.browser_download_url;
+      link.download = apkAsset.name;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     } catch (error) {
       console.error(error);
-      alert("Failed to get latest APK");
+      alert("Failed to download APK");
     }
   };
 
