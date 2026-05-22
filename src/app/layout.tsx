@@ -1,22 +1,9 @@
 import type { Metadata } from "next";
-import { Roboto_Condensed, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import localFont from "next/font/local";
 
-const roboto = Roboto_Condensed({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-hero",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
-
-// 1. Define the custom font and point to the file path
 const f1Font = localFont({
   src: "./fonts/F1-Regular.ttf",
   display: "swap",
