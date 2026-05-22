@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Menu, X, DownloadIcon } from "lucide-react";
+import { Menu, X, DownloadIcon, Sparkles, History } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import { FaGithub, FaTelegram } from "react-icons/fa";
 
 export default function HeroSection() {
   const [menuState, setMenuState] = useState(false);
+  const [appVersion, setAppVersion] = useState<"old" | "new">("new");
 
   type GitHubAsset = {
     name: string;
@@ -22,14 +23,11 @@ export default function HeroSection() {
   const downloadApk = async () => {
     try {
       const res = await fetch(
-        "https://api.github.com/repos/netcrawlerr/F1-Hub/releases/latest"
+        "https://api.github.com/repos/netcrawlerr/F1-Hub/releases/latest",
       );
       if (!res.ok) throw new Error("Failed to fetch latest release");
 
       const release: GitHubRelease = await res.json();
-
-      console.log("Latest release:", release);
-
       const apkAsset = release.assets.find((a) => a.name.startsWith("F1"));
 
       if (!apkAsset) {
@@ -49,6 +47,19 @@ export default function HeroSection() {
     }
   };
 
+  const screens = {
+    old: [
+      "/old-news-portrait.png",
+      "/old-schedule-portrait.png",
+      "/old-dstanding-portrait.png",
+    ],
+    new: [
+      "/news-portrait.png",
+      "/schedule-portrait.png",
+      "/d-standing-portrait.png",
+    ],
+  };
+
   return (
     <>
       <header className="">
@@ -58,7 +69,7 @@ export default function HeroSection() {
         >
           <div className="m-auto max-w-5xl px-4">
             <div className="flex flex-wrap items-center justify-between gap-4 py-2 lg:gap-0 lg:py-3">
-              {/* lgo */}
+              {/* logo */}
               <div className="flex w-full justify-between lg:w-auto">
                 <Link
                   href="/"
@@ -141,38 +152,66 @@ export default function HeroSection() {
               <DownloadIcon className="size-5" strokeWidth={2} />
             </Button>
 
-            <div className="flex gap-5">
-              <div className="mt-12 w-full flex justify-center">
-                <Image
-                  className="rounded-lg shadow-md"
-                  src="/1.png"
-                  alt="F1 Hub App Preview"
-                  width={400}
-                  height={100}
-                />
-              </div>
-              <div className="mt-12 w-full flex justify-center">
-                <Image
-                  className="rounded-lg shadow-md"
-                  src="/4.png"
-                  alt="F1 Hub App Preview"
-                  width={400}
-                  height={100}
-                />
-              </div>
-              <div className="mt-12 w-full flex justify-center">
-                <Image
-                  className="rounded-lg shadow-md"
-                  src="/5.png"
-                  alt="F1 Hub App Preview"
-                  width={400}
-                  height={100}
-                />
-              </div>
+            <div className="mt-16 inline-flex items-center gap-1 rounded-full border bg-zinc-100/80 p-1.5 backdrop-blur dark:bg-zinc-900/80 shadow-inner">
+              <button
+                onClick={() => setAppVersion("old")}
+                className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
+                  appVersion === "old"
+                    ? "bg-white text-zinc-900 shadow dark:bg-zinc-800 dark:text-zinc-50"
+                    : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                }`}
+              >
+                <History className="size-3.5" />
+                v1.0.3 (Legacy UI)
+              </button>
+              <button
+                onClick={() => setAppVersion("new")}
+                className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
+                  appVersion === "new"
+                    ? "bg-zinc-950 text-white shadow dark:bg-zinc-50 dark:text-zinc-950"
+                    : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
+                }`}
+              >
+                <Sparkles className="size-3.5" />
+                v1.1.0 (Latest UI)
+              </button>
+            </div>
+
+            <div className="flex gap-5 w-full justify-center">
+              {screens[appVersion].map((src, index) => (
+                <div
+                  key={`${appVersion}-${index}`}
+                  className="mt-12 w-full flex justify-center"
+                  style={{
+                    animation: `fadeInScale 0.35s ease-out ${index * 60}ms both`,
+                  }}
+                >
+                  <Image
+                    className="rounded-lg shadow-md"
+                    src={src}
+                    alt="F1 Hub App Preview"
+                    width={400}
+                    height={100}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
       </main>
+
+      <style jsx global>{`
+        @keyframes fadeInScale {
+          from {
+            opacity: 0;
+            transform: scale(0.97) translateY(4px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+      `}</style>
     </>
   );
 }
